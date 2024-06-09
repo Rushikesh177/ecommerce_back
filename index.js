@@ -18,7 +18,7 @@ mongoose.connect("mongodb+srv://Rushikesh177:9112807698@cluster0.q5wrpkv.mongodb
 //API creation
 
 app.get("/",(req, res)=>{
-    res.send("Express app is running")
+    res.send("Express app is running yes")
 })
 
 //image storage engine
