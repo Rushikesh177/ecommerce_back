@@ -1,4 +1,4 @@
-const port = 4000;
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -8,6 +8,8 @@ const path = require("path");
 const cors = require("cors");
 const { log } = require("console");
 const { send } = require("process");
+
+const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cors());
@@ -32,14 +34,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage:storage})
 
-//creating upload endpoint  for images
-app.use('/images',express.static('upload/images'))
-app.post("/upload", upload.single('product'),(req,res)=>{
-    res.json({
-        success:1,
-        image_url:`https://github.com/Rushikesh177/ecommerce_back/blob/main/upload/images/${req.file.filename}`
-    })
-})
+app.use('/images', express.static(path.join(__dirname, 'upload/images')));
+
+// Image upload endpoint
+app.post("/upload", upload.single('product'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: 0, message: 'No file uploaded' });
+  }
+  const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+  res.json({
+    success: 1,
+    image_url: imageUrl
+  });
+});
 
 //schema for creating products
 
